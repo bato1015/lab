@@ -1,29 +1,8 @@
-cmake_minimum_required( VERSION 2.8 )
-
-# Create Project
-project( solution )
-add_executable( project main.cpp )
-
-# Set StartUp Project (Option)
-# (This setting is able to enable by using CMake 3.6.0 RC1 or later.)
-set_property( DIRECTORY PROPERTY VS_STARTUP_PROJECT "project" )
-
-# Find Packages
-find_package( PCL 1.8 REQUIRED )
-
-if( PCL_FOUND )
-  # [C/C++]>[General]>[Additional Include Directories]
-  include_directories( ${PCL_INCLUDE_DIRS} )
-
-  # [C/C++]>[Preprocessor]>[Preprocessor Definitions]
-  add_definitions( ${PCL_DEFINITIONS} )
-  
-  # For Use Not PreCompiled Features 
-  #add_definitions( -DPCL_NO_PRECOMPILE )
-
-  # [Linker]>[General]>[Additional Library Directories]
-  link_directories( ${PCL_LIBRARY_DIRS} )
-
-  # [Linker]>[Input]>[Additional Dependencies]
-  target_link_libraries( project ${PCL_LIBRARIES} )
-endif()
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
+project(HELLO_WORLD)
+find_package(PCL 1.3 REQUIRED COMPONENTS common io)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+add_executable(pcd_write_test pcd_write.cpp)
+target_link_libraries(pcd_write_test ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES})
