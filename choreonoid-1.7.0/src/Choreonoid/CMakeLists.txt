@@ -1,0 +1,26 @@
+set(target choreonoid)
+
+set(sources main.cpp)
+if(WIN32)
+  set(sources ${sources} choreonoid.rc)
+endif()
+QTX_ADD_RESOURCES(RC_SRCS choreonoid.qrc)
+add_cnoid_executable(${target} ${sources} ${RC_SRCS})
+target_link_libraries(${target} CnoidUtil CnoidBase)
+set_target_properties(${target} PROPERTIES PROJECT_LABEL Application)
+
+if(MSVC)
+  option(USE_SUBSYSTEM_CONSOLE "Attaching a console of Windows for debugging" OFF)
+  if(NOT USE_SUBSYSTEM_CONSOLE)
+    set_target_properties(${target} PROPERTIES WIN32_EXECUTABLE true)
+  else()
+    set_target_properties(${target} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+  endif()
+  set_target_properties(${target} PROPERTIES DEBUG_POSTFIX -debug)
+endif()
+
+file(MAKE_DIRECTORY ${CNOID_BINARY_SHARE_DIR}/icon)
+file(COPY icon/choreonoid.svg DESTINATION ${CNOID_BINARY_SHARE_DIR}/icon)
+install(FILES icon/choreonoid.svg DESTINATION ${CNOID_SHARE_SUBDIR}/icon)
+
+install(FILES choreonoid.1 DESTINATION share/man/man1)
