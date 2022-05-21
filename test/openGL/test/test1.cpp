@@ -1,11 +1,21 @@
 #include <stdlib.h>
 #include <math.h>
 #include <GL/glut.h>
+#include <stdio.h>
+
+const static GLfloat blue[] = {0.2, 0.2, 0.8, 1.0}; /* 球の色 */
+const static GLfloat yellow[] = {0.8, 0.8, 0.2, 1.0};
+const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
+
+const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
+int nice = 45;
+int joint = 0;
 
 /*
  * 直方体を描く
  */
 GLboolean isLine = GL_FALSE;
+
 // cc prog4.c -L/usr/X11R6/lib -lglut -lGLU -lGL  -lXi -lXext -lX11 -lm^C
 static void myBox(double x, double y, double z)
 {
@@ -35,8 +45,6 @@ static void myBox(double x, double y, double z)
         {0.0, -1.0, 0.0},
         {0.0, 1.0, 0.0}};
 
-    const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
-
     int i, j;
 
     /* 材質を設定する */
@@ -57,9 +65,9 @@ static void myBox(double x, double y, double z)
 /*
  * 円柱を描く
  */
+//直径、高さ、滑らかさ
 static void myCylinder(double radius, double height, int sides)
 {
-    const static GLfloat yellow[] = {0.8, 0.8, 0.2, 1.0};
     double step = 6.28318530717958647692 / (double)sides;
     int i = 0;
 
@@ -114,9 +122,9 @@ static void myGround(double height)
 
     glBegin(GL_QUADS);
     glNormal3d(0.0, 1.0, 0.0);
-    for (j = -7; j < 7; ++j)
+    for (j = -5; j < 5; ++j)
     {
-        for (i = -7; i < 7; ++i)
+        for (i = -5; i < 5; ++i)
         {
             glMaterialfv(GL_FRONT, GL_DIFFUSE, ground[(i + j) & 1]);
             glVertex3d((GLdouble)i, height, (GLdouble)j);
@@ -128,12 +136,48 @@ static void myGround(double height)
     glEnd();
 }
 
+/*ハンド*/
+void hand_display()
+{
+    glTranslated(0.0, 0.0, -1.0);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+    glutSolidCube(0.9);
+}
+
+/*上腕*/
+void forearm_display()
+{
+    glTranslated(0.0, 0.0, -1.0);
+    myBox(0.3, 0.3, 1.0);
+}
+
+/*関節*/
+void joint_display(int n)
+{
+    glTranslated(0, 1.0, 0.0);
+    glRotated(90.0, 1.0, 0.0, 0.0);
+    myCylinder(0.4, 0.4, 5);
+    glRotated(n, 0.0, 1.0, 0.0);
+}
+/*前腕*/
+void upper_display()
+{
+    glRotated(joint, 0.0, 1.0, 0.0);
+    glTranslated(0.0, 1.0, 0.0);
+    myBox(0.3, 1.0, 0.3); /* １番目の腕 */
+}
+
+/* 土台　　　 */
+void base()
+{
+    glTranslated(0.0, -1.8, 0.0);
+    myCylinder(1.0, 0.2, 16);
+}
 /*
  * 画面表示
  */
 static void display(void)
 {
-    const static GLfloat blue[] = {0.2, 0.2, 0.8, 1.0};     /* 球の色 */
     const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
 
     /* 画面クリア */
@@ -150,26 +194,15 @@ static void display(void)
 
     /* シーンの描画 */
     myGround(-2.0); /* 地面　　　 */
-
-    glTranslated(0.0, -1.8, 0.0);
-    myCylinder(1.0, 0.2, 16); /* 土台　　　 */
-
-    glTranslated(0.0, 1.0, 0.0);
-    myBox(0.3, 1.0, 0.3); /* １番目の腕 */
-
-    glTranslated(0.0, 1.0, 0.0);
-    glRotated(90.0, 1.0, 0.0, 0.0);
-    myCylinder(0.4, 0.4, 16); /* 関節　　　 */
-
-    glTranslated(0.0, 0.0, -1.0);
-    myBox(0.3, 0.3, 1.0); /* ２番目の腕 */
-
-    glTranslated(0.0, 0.0, -1.0);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
-    glutSolidCube(0.9); /* ハンド　　 */
+    base();
+    upper_display();
+    joint_display(nice);
+    forearm_display();
+    hand_display();
 
     glFlush();
 }
+
 void mouse(int button, int state, int x, int y)
 {
     if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
@@ -196,7 +229,17 @@ static void resize(int w, int h)
 
 static void keyboard(unsigned char key, int x, int y)
 {
-    /* ESC か q をタイプしたら終了 */
+    if (key == 'w')
+    {
+        nice = 20;
+        glutPostRedisplay(); //再表示
+    }
+    if (key == 'e')
+    {
+        joint = 60;
+        glutPostRedisplay(); //再表示
+        /* ESC か q をタイプしたら終了 */
+    }
     if (key == '\033' || key == 'q')
     {
         exit(0);
@@ -222,6 +265,7 @@ int main(int argc, char *argv[])
     glutReshapeFunc(resize);
     glutKeyboardFunc(keyboard);
     init();
+    printf("%d", nice);
     glutMainLoop();
     return 0;
 }
