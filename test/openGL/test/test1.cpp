@@ -8,8 +8,13 @@ const static GLfloat yellow[] = {0.8, 0.8, 0.2, 1.0};
 const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
 
 const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
-int nice = 45;
+int base1 = 90, jo1 = 0, jo2 = 0, jo3 = 0;
 int joint = 0;
+
+#define MAXPOINTS 100      /* 記憶する点の数　　 */
+GLint point[MAXPOINTS][2]; /* 座標を記憶する配列 */
+int pointnum = 0;          /* 記憶した座標の数　 */
+int rubberband = 0;        /* ラバーバンドの消去 */
 
 /*
  * 直方体を描く
@@ -139,11 +144,18 @@ static void myGround(double height)
 /*ハンド*/
 void hand_display()
 {
-    glTranslated(0.0, 0.0, -1.0);
+    glTranslated(0.0, 0, -0.8);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
     glutSolidCube(0.9);
 }
 
+void joint3_display(int n)
+{
+    glTranslated(0.0, 0.0, -1.0);
+    glRotated(n, 0.0, 1.0, 0.0);
+    glRotated(90.0, 0.0, 1.0, 0.0);
+    myCylinder(0.4, 0.4, 15);
+}
 /*上腕*/
 void forearm_display()
 {
@@ -152,27 +164,38 @@ void forearm_display()
 }
 
 /*関節*/
-void joint_display(int n)
+void joint2_display(int n)
 {
     glTranslated(0, 1.0, 0.0);
-    glRotated(90.0, 1.0, 0.0, 0.0);
+    glRotated(n, 1.0, 0.0, 0.0);
+    glRotated(90.0, 0, 0.0, 1.0);
     myCylinder(0.4, 0.4, 5);
-    glRotated(n, 0.0, 1.0, 0.0);
+    // glRotated(n, 0.0, 1.0, 0.0);
 }
 /*前腕*/
 void upper_display()
 {
-    glRotated(joint, 0.0, 1.0, 0.0);
+    glRotated(-90.0, 0.0, 0.0, 1.0);
+    glRotated(0, 0.0, 1.0, 0.0);
     glTranslated(0.0, 1.0, 0.0);
     myBox(0.3, 1.0, 0.3); /* １番目の腕 */
 }
+void joint1_display(int n)
+{
+    glRotated(n, 1.0, 0.0, 0.0);
+    glTranslated(0, 1.0, 0.0);
+    glRotated(90.0, 0.0, 0.0, 1.0);
+    myCylinder(0.4, 0.4, 15);
+}
 
 /* 土台　　　 */
-void base()
+void base(int n)
 {
-    glTranslated(0.0, -1.8, 0.0);
-    myCylinder(1.0, 0.2, 16);
+    glRotated(n, 0.0, 1.0, 0.0);
+    glTranslated(0.0, -1.5, 0.0);
+    myCylinder(1.0, 0.8, 16);
 }
+
 /*
  * 画面表示
  */
@@ -190,14 +213,16 @@ static void display(void)
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
     /* 視点の移動（シーンの方を奥に移す）*/
-    glTranslated(0.0, 0.0, -10.0);
+    glTranslated(0.0, 0.0, -20.0);
 
     /* シーンの描画 */
     myGround(-2.0); /* 地面　　　 */
-    base();
+    base(base1);
+    joint1_display(jo1);
     upper_display();
-    joint_display(nice);
+    joint2_display(jo2);
     forearm_display();
+    joint3_display(jo3);
     hand_display();
 
     glFlush();
@@ -227,19 +252,38 @@ static void resize(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
+static void swjug(int &a, int anglemax, int anglemin)
+{
+    int b = 1;
+    if (a > anglemax || a < anglemin)
+        b *= -1;
+    a += 10 * b;
+    glutPostRedisplay();
+}
+
 static void keyboard(unsigned char key, int x, int y)
 {
+    /*if (key == 'e')
+    {
+        joint = 20;
+        glutPostRedisplay(); //再表示
+    }
     if (key == 'w')
     {
-        nice = 20;
+        if (base1 > 360)
+            base1 = 0;
+        base1 += 10;
         glutPostRedisplay(); //再表示
-    }
+        // ESC か q をタイプしたら終了
+    }*/
+    if (key == 'w')
+        swjug(base1, 0, 360);
     if (key == 'e')
-    {
-        joint = 60;
-        glutPostRedisplay(); //再表示
-        /* ESC か q をタイプしたら終了 */
-    }
+        swjug(jo1, 0, 90);
+    if (key == 'r')
+        swjug(jo2, 0, 90);
+    if (key == 't')
+        swjug(jo3, 0, 90);
     if (key == '\033' || key == 'q')
     {
         exit(0);
@@ -263,9 +307,10 @@ int main(int argc, char *argv[])
     glutCreateWindow(argv[0]);
     glutDisplayFunc(display);
     glutReshapeFunc(resize);
+    glutInitWindowSize(900, 900);
     glutKeyboardFunc(keyboard);
     init();
-    printf("%d", nice);
+    // printf("%d", nice);
     glutMainLoop();
     return 0;
 }

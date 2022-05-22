@@ -2,6 +2,10 @@
 #include <math.h>
 #include <GL/glut.h>
 
+#define MAXPOINTS 100      /* 記憶する点の数　　 */
+GLint point[MAXPOINTS][2]; /* 座標を記憶する配列 */
+int pointnum = 0;          /* 記憶した座標の数　 */
+int rubberband = 0;        /* ラバーバンドの消去 */
 GLboolean isLine = GL_FALSE;
 static void myBox(double x, double y, double z)
 {
