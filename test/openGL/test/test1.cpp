@@ -10,6 +10,7 @@ const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
 const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
 int base1 = 90, jo1 = 0, jo2 = 0, jo3 = 0;
 int joint = 0;
+bool flag = 0;
 
 #define MAXPOINTS 100      /* 記憶する点の数　　 */
 GLint point[MAXPOINTS][2]; /* 座標を記憶する配列 */
@@ -127,7 +128,7 @@ static void myGround(double height)
 
     glBegin(GL_QUADS);
     glNormal3d(0.0, 1.0, 0.0);
-    for (j = -5; j < 5; ++j)
+    for (j = -10; j < 10; ++j)
     {
         for (i = -5; i < 5; ++i)
         {
@@ -182,8 +183,8 @@ void upper_display()
 }
 void joint1_display(int n)
 {
-    glRotated(n, 1.0, 0.0, 0.0);
     glTranslated(0, 1.0, 0.0);
+    glRotated(n, 1.0, 0.0, 0.0);
     glRotated(90.0, 0.0, 0.0, 1.0);
     myCylinder(0.4, 0.4, 15);
 }
@@ -191,8 +192,8 @@ void joint1_display(int n)
 /* 土台　　　 */
 void base(int n)
 {
-    glRotated(n, 0.0, 1.0, 0.0);
     glTranslated(0.0, -1.5, 0.0);
+    glRotated(n, 0.0, 1.0, 0.0);
     myCylinder(1.0, 0.8, 16);
 }
 
@@ -254,10 +255,17 @@ static void resize(int w, int h)
 
 static void swjug(int &a, int anglemax, int anglemin)
 {
-    int b = 1;
-    if (a > anglemax || a < anglemin)
-        b *= -1;
-    a += 10 * b;
+    if (a > anglemax)
+        flag = 1;
+    if (flag == 1)
+    {
+        a -= 10;
+        if (a < anglemin)
+            flag = 0;
+    }
+    else
+        a += 10;
+
     glutPostRedisplay();
 }
 
@@ -267,7 +275,7 @@ static void keyboard(unsigned char key, int x, int y)
     {
         joint = 20;
         glutPostRedisplay(); //再表示
-    }
+    }*/
     if (key == 'w')
     {
         if (base1 > 360)
@@ -275,15 +283,15 @@ static void keyboard(unsigned char key, int x, int y)
         base1 += 10;
         glutPostRedisplay(); //再表示
         // ESC か q をタイプしたら終了
-    }*/
-    if (key == 'w')
-        swjug(base1, 0, 360);
+    }
+    /*if (key == 'w')
+        swjug(base1, 0, 360);*/
     if (key == 'e')
-        swjug(jo1, 0, 90);
+        swjug(jo1, 0, -90);
     if (key == 'r')
-        swjug(jo2, 0, 90);
+        swjug(jo2, 0, -90);
     if (key == 't')
-        swjug(jo3, 0, 90);
+        swjug(jo3, 0, -90);
     if (key == '\033' || key == 'q')
     {
         exit(0);
