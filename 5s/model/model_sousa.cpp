@@ -269,7 +269,7 @@ static void resize(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-static void swjug(unsigned char key, unsigned char up_char, unsigned char down_char, int &a, int anglemin, int anglemax)
+static void swjug(unsigned char key, unsigned char down_char, unsigned char up_char, int &a, int anglemin, int anglemax)
 {
     if (key == up_char)
     {
