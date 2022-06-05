@@ -213,6 +213,8 @@ static void display(void)
 {
 
     /* シーンの描画 */
+    glPushMatrix();
+
     myGround(-0.2 * bay); /* 地面　　　 */
     base(base1);
     joint1_display(jo1);
@@ -221,6 +223,10 @@ static void display(void)
     forearm_display();
     joint3_display(jo3);
     hand_display();
+
+    glPopMatrix();
+    glTranslated(20, 0, 0.0);
+    glutSolidCube(0.3 * bay);
 
     glFlush();
 }
@@ -237,7 +243,28 @@ static void since(void)
     float y = crower + body[1] + cos(jo2) * boom[1];
     float z = cos(base1) * sin(jo1) * boom[1];
 
-    // gluLookAt(x, y, z, x + 10, y + 10, z + 10, 0, 1, 0);
+    float xx = sin(base1) * sin(jo1) * 1;
+    float xy = cos(jo2) * 1;
+    float xz = cos(base1) * cos(jo1) * 1;
+
+    gluLookAt(x, y, z, 5 + x, -5, 20 + z, 0, 1.0, 0);
+    /* 光源の位置を設定 */
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+
+    /* 視点の移動（シーンの方を奥に移す）*/
+    // glTranslated(0.0, 0.0, -70.0);
+    display();
+}
+
+static void since1(void)
+{
+    const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
+    /* 画面クリア */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    /* モデルビュー変換行列の初期化 */
+    glLoadIdentity();
+    // gluLookAt(x, y, z, 5, -10, -10, 0, 1.0, 0);
     /* 光源の位置を設定 */
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
@@ -245,6 +272,7 @@ static void since(void)
     glTranslated(0.0, 0.0, -70.0);
     display();
 }
+
 void mouse(int button, int state, int x, int y)
 {
     if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
@@ -320,6 +348,7 @@ int main(int argc, char *argv[])
     glutKeyboardFunc(keyboard);
     init();
     // printf("%d", nice);
+
     glutMainLoop();
     return 0;
 }
