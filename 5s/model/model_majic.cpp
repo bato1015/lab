@@ -8,7 +8,7 @@ const static GLfloat yellow[] = {0.8, 0.8, 0.2, 1.0};
 const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
 
 const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
-int base1 = 90, jo1 = 0, jo2 = 0, jo3 = 0;
+int base1 = 90, jo1 = -50, jo2 = -90, jo3 = 0;
 int joint = 0;
 bool flag = 0;
 int bay = 5;
@@ -17,8 +17,10 @@ GLint point[MAXPOINTS][2]; /* 座標を記憶する配列 */
 int pointnum = 0;          /* 記憶した座標の数　 */
 int rubberband = 0;        /* ラバーバンドの消去 */
 
-/**/
-
+double crower = 0.2;              //クローラー
+double body[] = {0.8, 0.25};      //半径,高さ
+double boom[] = {0.1, 1.15, 0.1}; //縦,高さ,横
+double arm[] = {0.1, 0.6, 0.1};   //縦、高さ、横
 /*
  * 直方体を描く
  */
@@ -147,54 +149,57 @@ static void myGround(double height)
 /*ハンド*/
 void hand_display()
 {
-    glTranslated(0.15 * bay, 0 * bay, 0 * bay);
+    glTranslated(0, 0.15 * bay, 0.0);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
     glutSolidCube(0.3 * bay);
 }
 
 void joint3_display(int n)
 {
-    glTranslated(0.0, 0.0, -0.6 * bay);
-    glRotated(n, 0.0, 1.0, 0.0);
-    glRotated(90.0, 0.0, 1.0, 0.0);
+    glPushMatrix();
+    glRotated(90.0, 0.0, 0.0, 1.0);
     myCylinder(0.1 * bay, 0.1 * bay, 15);
+    glPopMatrix();
+    glRotated(n, 1.0, 0.0, 0.0);
 }
 /*上腕*/
 void forearm_display()
 {
-    glTranslated(0.0, 0.0, -0.6 * bay);
-    myBox(0.1 * bay, 0.1 * bay, 0.6 * bay);
+    glTranslated(0.0, 0.6 * bay, 0);
+    myBox(0.1 * bay, 0.6 * bay, 0.1 * bay);
+    glTranslated(0, 0.6 * bay, 0.0);
 }
 
 /*関節*/
 void joint2_display(int n)
 {
-    glTranslated(0, 1.15 * bay, 0.0);
-    glRotated(n, 1.0, 0.0, 0.0);
+    glPushMatrix();
     glRotated(90.0, 0, 0.0, 1.0);
     myCylinder(0.1 * bay, 0.1 * bay, 5);
+    glPopMatrix();
+    glRotated(n, 1.0, 0.0, 0.0);
     // glRotated(n, 0.0, 1.0, 0.0);
 }
 /*前腕*/
 void upper_display()
 {
-    glRotated(-90.0, 0.0, 0.0, 1.0);
-    glRotated(0, 0.0, 1.0, 0.0);
     glTranslated(0.0, 1.15 * bay, 0.0);
     myBox(0.1 * bay, 1.15 * bay, 0.1 * bay); /* １番目の腕 */
+    glTranslated(0, 1.15 * bay, 0.0);
 }
 void joint1_display(int n)
 {
-    glTranslated(0, 0 * bay, 0.0);
     glRotated(n, 1.0, 0.0, 0.0);
+    glPushMatrix();
     glRotated(90.0, 0.0, 0.0, 1.0);
     myCylinder(0.1 * bay, 0.4 * bay, 15);
+    glPopMatrix();
 }
 
 /* 土台　　　 */
 void base(int n)
 {
-    glTranslated(0.0, 0.4 * bay, 0.0);
+    glTranslated(0.0, 0.2 * bay, 0.0);
     glRotated(n, 0.0, 1.0, 0.0);
     myCylinder(0.8 * bay, 0.25 * bay, 16);
 }
@@ -226,12 +231,12 @@ static void since(void)
 
     /* モデルビュー変換行列の初期化 */
     glLoadIdentity();
-    gluLookAt(0, (0.4 + 1.15) * bay, -5, -10, (0.4 + 1.15) * bay, 10, 0, 1, 0);
+    // gluLookAt(0, (0.4 + 1.15) * bay, -5, -10, (0.4 + 1.15) * bay, 10, 0, 1, 0);
     /* 光源の位置を設定 */
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
     /* 視点の移動（シーンの方を奥に移す）*/
-    // glTranslated(0.0, 0.0, -70.0);
+    glTranslated(0.0, 0.0, -70.0);
     display();
 }
 void mouse(int button, int state, int x, int y)
@@ -302,7 +307,7 @@ static void keyboard(unsigned char key, int x, int y)
         swjug(jo1, 0, -90);
 
     if (key == 'r')
-        swjug(jo2, 0, -90);
+        swjug(jo2, -90, -180);
     if (key == 't')
         swjug(jo3, 0, -90);
     if (key == '\033' || key == 'q')

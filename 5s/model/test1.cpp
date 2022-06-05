@@ -8,8 +8,7 @@ const static GLfloat yellow[] = {0.8, 0.8, 0.2, 1.0};
 const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
 
 const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
-// int base1 = 90, jo1 = -50, jo2 = -50, jo3 = 0;
-int base1 = 0, jo1 = 0, jo2 = 0, jo3 = 0;
+int base1 = 90, jo1 = 0, jo2 = 0, jo3 = 0;
 int joint = 0;
 bool flag = 0;
 int bay = 5;
@@ -17,11 +16,6 @@ int bay = 5;
 GLint point[MAXPOINTS][2]; /* 座標を記憶する配列 */
 int pointnum = 0;          /* 記憶した座標の数　 */
 int rubberband = 0;        /* ラバーバンドの消去 */
-
-double crower = 0.2;              //クローラー
-double body[] = {0.8, 0.25};      //半径,高さ
-double boom[] = {0.1, 1.15, 0.1}; //縦,高さ,横
-double arm[] = {0.1, 0.6, 0.1};   //縦、高さ、横
 
 /*
  * 直方体を描く
@@ -151,59 +145,56 @@ static void myGround(double height)
 /*ハンド*/
 void hand_display()
 {
-    glTranslated(0, 0.15 * bay, 0.0);
+    glTranslated(0.15 * bay, 0 * bay, 0 * bay);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
     glutSolidCube(0.3 * bay);
 }
 
 void joint3_display(int n)
 {
-    glPushMatrix();
-    glRotated(90.0, 0.0, 0.0, 1.0);
+    glTranslated(0.0, 0.0, -0.6 * bay);
+    glRotated(n, 0.0, 1.0, 0.0);
+    glRotated(90.0, 0.0, 1.0, 0.0);
     myCylinder(0.1 * bay, 0.1 * bay, 15);
-    glPopMatrix();
-    glRotated(n, 1.0, 0.0, 0.0);
 }
 /*上腕*/
 void forearm_display()
 {
-    glTranslated(0.0, arm[1] * bay, 0);
-    myBox(arm[0] * bay, arm[1] * bay, arm[2] * bay);
-    glTranslated(0, arm[1] * bay, 0.0);
+    glTranslated(0.0, 0.0, -0.6 * bay);
+    myBox(0.1 * bay, 0.1 * bay, 0.6 * bay);
 }
 
 /*関節*/
 void joint2_display(int n)
 {
-    glPushMatrix();
+    glTranslated(0, 1.15 * bay, 0.0);
+    glRotated(n, 1.0, 0.0, 0.0);
     glRotated(90.0, 0, 0.0, 1.0);
     myCylinder(0.1 * bay, 0.1 * bay, 5);
-    glPopMatrix();
-    glRotated(n, 1.0, 0.0, 0.0);
     // glRotated(n, 0.0, 1.0, 0.0);
 }
 /*前腕*/
 void upper_display()
 {
-    glTranslated(0.0, boom[1] * bay, 0.0);
-    myBox(boom[0] * bay, boom[1] * bay, boom[2] * bay); /* １番目の腕 */
-    glTranslated(0, boom[1] * bay, 0.0);
+    glRotated(-90.0, 0.0, 0.0, 1.0);
+    glRotated(0, 0.0, 1.0, 0.0);
+    glTranslated(0.0, 1.15 * bay, 0.0);
+    myBox(0.1 * bay, 1.15 * bay, 0.1 * bay); /* １番目の腕 */
 }
 void joint1_display(int n)
 {
+    glTranslated(0, 0 * bay, 0.0);
     glRotated(n, 1.0, 0.0, 0.0);
-    glPushMatrix();
     glRotated(90.0, 0.0, 0.0, 1.0);
     myCylinder(0.1 * bay, 0.4 * bay, 15);
-    glPopMatrix();
 }
 
 /* 土台　　　 */
 void base(int n)
 {
-    glTranslated(0.0, crower * bay, 0.0);
+    glTranslated(0.0, 0.4 * bay, 0.0);
     glRotated(n, 0.0, 1.0, 0.0);
-    myCylinder(body[0] * bay, body[1] * bay, 16);
+    myCylinder(0.8 * bay, 0.25 * bay, 16);
 }
 
 /*
@@ -211,6 +202,19 @@ void base(int n)
  */
 static void display(void)
 {
+    const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
+
+    /* 画面クリア */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    /* モデルビュー変換行列の初期化 */
+    glLoadIdentity();
+
+    /* 光源の位置を設定 */
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+
+    /* 視点の移動（シーンの方を奥に移す）*/
+    glTranslated(0.0, 0.0, -70.0);
 
     /* シーンの描画 */
     myGround(-0.2 * bay); /* 地面　　　 */
@@ -224,27 +228,7 @@ static void display(void)
 
     glFlush();
 }
-/*視点をもらう*/
-static void since(void)
-{
-    const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
-    /* 画面クリア */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /* モデルビュー変換行列の初期化 */
-    glLoadIdentity();
-    float x = sin(base1) * sin(jo1) * boom[1];
-    float y = crower + body[1] + cos(jo2) * boom[1];
-    float z = cos(base1) * sin(jo1) * boom[1];
-
-    // gluLookAt(x, y, z, x + 10, y + 10, z + 10, 0, 1, 0);
-    /* 光源の位置を設定 */
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-
-    /* 視点の移動（シーンの方を奥に移す）*/
-    glTranslated(0.0, 0.0, -70.0);
-    display();
-}
 void mouse(int button, int state, int x, int y)
 {
     if (button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
@@ -269,30 +253,69 @@ static void resize(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-static void swjug(unsigned char key, unsigned char up_char, unsigned char down_char, int &a, int anglemin, int anglemax)
+static void swjug(int &a, int anglemax, int anglemin)
 {
-    if (key == up_char)
+    if (a > anglemax)
+        flag = 1;
+    if (flag == 1)
     {
-        if (a > anglemax)
-            a = anglemax;
-        a += 1;
-    }
-    if (key == down_char)
-    {
-        if (a < anglemin)
-            a = anglemin;
         a -= 1;
+        if (a < anglemin)
+            flag = 0;
     }
+    else
+        a += 1;
+
+    glutPostRedisplay();
+}
+
+static void swjug(int &a, int anglemax, int anglemin)
+{
+    if (a > anglemax)
+        flag = 1;
+    if (flag == 1)
+    {
+        a -= 1;
+        if (a < anglemin)
+            flag = 0;
+    }
+    else
+        a += 1;
+
     glutPostRedisplay();
 }
 
 static void keyboard(unsigned char key, int x, int y)
 {
-    swjug(key, 'w', 's', base1, 0, 360); //旋回
-    swjug(key, 'e', 'd', jo1, 0, 90);    //第一関節
-    swjug(key, 'r', 'f', jo2, 0, 90);    //第一関節
-    swjug(key, 't', 'g', jo3, 0, 90);    //第一関節
+    /*if (key == 'e')
+    {
+        joint = 20;
+        glutPostRedisplay(); //再表示
+    }*/
+    if (key == 'w')
+    {
+        if (base1 > 360)
+            base1 = 360;
+        base1 += 1;
+        glutPostRedisplay(); //再表示
+        // ESC か q をタイプしたら終了
+    }
+    if (key == 's')
+    {
+        if (base1 < 0)
+            base1 = 0;
+        base1 -= 1;
+        glutPostRedisplay(); //再表示
+    }
+    /*if (key == 'w')
+        swjug(base1, 0, 360);*/
+    if (key == 'e')
+        swjug(jo1, 0, -90);
 
+    if (key == 'r')
+        swjug(jo2, 0, -90);
+    if (key == 't')
+        swjug(jo3, 0, -90);
     if (key == '\033' || key == 'q')
     {
         exit(0);
@@ -314,7 +337,7 @@ int main(int argc, char *argv[])
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
     glutCreateWindow(argv[0]);
-    glutDisplayFunc(since);
+    glutDisplayFunc(display);
     glutReshapeFunc(resize);
     glutInitWindowSize(900, 900);
     glutKeyboardFunc(keyboard);
