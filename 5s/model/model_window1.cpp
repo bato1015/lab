@@ -233,8 +233,11 @@ static void display(void)
     hand_display();
 
     glPopMatrix();
+
+    glPushMatrix();
     glTranslated(20, 0, 0.0);
     glutSolidCube(0.3 * bay);
+    glPopMatrix();
 
     glFlush();
 }
@@ -253,7 +256,7 @@ static void since(void)
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
     /* 視点の移動（シーンの方を奥に移す）*/
-    glTranslated(0.0, 0.0, -70.0);
+    glTranslated(0.0, 0, -70.0);
     display();
 }
 
@@ -274,12 +277,12 @@ static void since1(void)
     /* モデルビュー変換行列の初期化 */
     glLoadIdentity();
 
-    gluLookAt(x, y, z, 5, -10, -10, 0, 1.0, 0);
+    // gluLookAt(x, y, z, 5, -10, -10, 0, 1.0, 0);
     /* 光源の位置を設定 */
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
     /* 視点の移動（シーンの方を奥に移す）*/
-    // glTranslated(0.0, 0.0, -70.0);
+    glTranslated(0.0, 0.0, -70.0);
     display();
 }
 
@@ -291,7 +294,7 @@ void mouse(int button, int state, int x, int y)
     glutPostRedisplay(); //再表示
 }
 
-static void resize(int w, int h)
+static void resize1(int w, int h)
 {
     /* ウィンドウ全体をビューポートにする */
     glViewport(0, 0, w, h);
@@ -309,6 +312,21 @@ static void resize(int w, int h)
 
     gluPerspective(42.5, 1.63, 1.0, 100);
     glPopMatrix();
+
+    /* モデルビュー変換行列の指定 */
+    glMatrixMode(GL_MODELVIEW);
+}
+static void resize(int w, int h)
+{
+    /* ウィンドウ全体をビューポートにする */
+    glViewport(0, 0, w, h);
+
+    /* 透視変換行列の指定 */
+    glMatrixMode(GL_PROJECTION);
+
+    /* 透視変換行列の初期化 */
+    glLoadIdentity();
+    gluPerspective(30.0, (double)w / (double)h, 1.0, 100.0);
 
     /* モデルビュー変換行列の指定 */
     glMatrixMode(GL_MODELVIEW);
@@ -356,22 +374,31 @@ static void init(void)
 
 int main(int argc, char *argv[])
 {
-    int window1, window2;
+    int window1, window2, window3;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
     window1 = glutCreateWindow(argv[0]);
-    glutDisplayFunc(since);
+    glutDisplayFunc(since1);
     glutReshapeFunc(resize);
     glutInitWindowSize(1280, 1024);
     glutKeyboardFunc(keyboard);
     init();
 
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
-    window2 = glutCreateWindow("Window1");
-    glutInitWindowSize(1080, 1024);
+    window2 = glutCreateWindow(argv[1]);
     glutDisplayFunc(since1);
     glutReshapeFunc(resize);
+    glutInitWindowSize(1080, 1024);
+    glutKeyboardFunc(keyboard);
     init();
+
+    /*glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
+    window3 = glutCreateWindow("Window3");
+    glutInitWindowSize(1080, 1024);
+    glutDisplayFunc(since);
+    glutReshapeFunc(resize);
+    init();
+    */
     // printf("%d", nice);
     glutMainLoop();
     return 0;
