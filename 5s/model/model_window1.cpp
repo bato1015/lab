@@ -374,6 +374,7 @@ static void init(void)
 
 int main(int argc, char *argv[])
 {
+    //バラバラで動くのはスレッドの導入が必要そうwindow1とwindow2
     int window1, window2, window3;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
