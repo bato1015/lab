@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(testas)
-add_executable(testas model_sousa.cpp)
+add_executable(testas model_view2.cpp)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
