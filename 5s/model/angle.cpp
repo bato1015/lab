@@ -3,7 +3,7 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <stdio.h>
-#include<string>
+#include<string.h>
 #include <sstream>
 
 
@@ -13,16 +13,18 @@ const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
 
 const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
 // int base1 = 90, jo1 = -50, jo2 = -50, jo3 = 0;
-int base1 = 0, jo1 = 0, jo2 = 0, jo3 = 0;
-int bay = 10;        //等倍
+int base1 =0, jo1 = 0, jo2 = 0, jo3 = 0;
+int bay = 50;        //等倍
 int rubberband = 0; /* ラバーバンドの消去 */
 
-double crower = 0.2*bay;              //クローラー
-double body[] = {0.6*bay, 0.25*bay};      //半径,高さ
-double boom[] = {0.1*bay, 1.15*bay, 0.1*bay}; //縦,高さ,横
-double arm[] = {0.1*bay, 0.6*bay, 0.1*bay};   //縦、高さ、横
-double siten = 0.15*bay;               //視点の位置を取り付け
-double point_che = 30;            //注釈点
+double crower = 0.0105*bay;              //クローラー
+double body[] = {0.06*bay, 0.025*bay};      //半径,高さ
+double boom[] = {0.01*bay, 0.115*bay, 0.01*bay}; //縦,高さ,横
+double arm[] = {0.01*bay, 0.06*bay, 0.01*bay};   //縦、高さ、横
+//double siten = 0.015*bay;               //視点の位置を取り付け
+double siten = 0.015*bay;  
+double point_che = 0.3;            //注釈点
+bool flag_num=0;
 double radee(int n){
     return n*3.1415/180;
 }
@@ -77,7 +79,50 @@ static void myBox(double x, double y, double z)
     }
     glEnd();
 }
+static void myBox1(double x, double y, double z)
+{
+    GLdouble vertex[][3] = {
+        {-x, -y, -z},
+        {x, -y, -z},
+        {x, y, -z},
+        {-x, y, -z},
+        {-x, -y, z},
+        {x, -y, z},
+        {x, y, z},
+        {-x, y, z}};
 
+    const static int face[][4] = {
+        {0, 1, 2, 3},
+        {1, 5, 6, 2},
+        {5, 4, 7, 6},
+        {4, 0, 3, 7},
+        {4, 5, 1, 0},
+        {3, 2, 6, 7}};
+
+    const static GLdouble normal[][3] = {
+        {0.0, 0.0, -1.0},
+        {1.0, 0.0, 0.0},
+        {0.0, 0.0, 1.0},
+        {-1.0, 0.0, 0.0},
+        {0.0, -1.0, 0.0},
+        {0.0, 1.0, 0.0}};
+
+    int i, j;
+
+    /* 材質を設定する */
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+
+    glBegin(GL_QUADS);
+    for (j = 0; j < 6; ++j)
+    {
+        glNormal3dv(normal[j]);
+        for (i = 4; --i >= 0;)
+        {
+            glVertex3dv(vertex[face[j][i]]);
+        }
+    }
+    glEnd();
+}
 /*
  * 円柱を描く
  */
@@ -152,19 +197,52 @@ static void myGround(double height)
     glEnd();
 }
 
+void track(){
+    glPushMatrix();
+        double danpu[]={5,0.52,2.5};//長さ
+        double ita[]={0.2,0.52};//幅
+        glTranslated(-5, 1.125, 0);//基準面
+
+        glPushMatrix();
+            glTranslated(-danpu[0]/2-ita[0]/2, danpu[1]/2, 0);//横1
+            myBox(ita[0]/2 ,  danpu[1]/2, danpu[2]/2);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslated(danpu[0]/2+ita[0]/2, danpu[1]/2, 0);//横2
+            myBox(ita[0]/2 ,  danpu[1]/2, danpu[2]/2);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslated(0, danpu[1]/2, -danpu[2]/2-ita[0]/2);//縦1
+            myBox(danpu[0]/2 , danpu[1]/2, ita[0]/2);
+        glPopMatrix();
+    
+        glPushMatrix();
+            glTranslated(0, danpu[1]/2, danpu[2]/2+ita[0]/2);//縦2
+            myBox(danpu[0]/2 , danpu[1]/2, ita[0]/2);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslated(0, danpu[1]/2-ita[0]/2, 0);//底面
+            myBox1(danpu[0]/2 , -ita[0]/2, danpu[2]/2);
+        glPopMatrix();
+
+     glPopMatrix();
+}
 /*ハンド*/
 void hand_display()
 {
     glTranslated(0, 0.15 , 0.0);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
-    glutSolidCube(0.3/2 *bay);
+    glutSolidCube(0.03/2 *bay);
 }
 
 void joint3_display(int n)
 {
     glPushMatrix();
-    glRotated(90.0, 0.0, 0.0, 1.0);
-    myCylinder(0.1 , 0.1 , 15);
+        glRotated(90.0, 0.0, 0.0, 1.0);
+        myCylinder(0.01/2*bay, 0.01/2*bay, 15);
     glPopMatrix();
     glRotated(n, 1.0, 0.0, 0.0);
 }
@@ -180,8 +258,8 @@ void forearm_display()
 void joint2_display(int n)
 {
     glPushMatrix();
-    glRotated(90.0, 0, 0.0, 1.0);
-    myCylinder(0.1 , 0.1 , 5);
+        glRotated(90.0, 0, 0.0, 1.0);
+        myCylinder(0.01/2*bay , 0.01/2*bay , 5);
     glPopMatrix();
     glRotated(n, 1.0, 0.0, 0.0);
     // glRotated(n, 0.0, 1.0, 0.0);
@@ -197,8 +275,8 @@ void joint1_display(int n)
 {
     glRotated(n, 1.0, 0.0, 0.0);
     glPushMatrix();
-    glRotated(90.0, 0.0, 0.0, 1.0);
-    myCylinder(0.1 , 0.4 , 15);
+        glRotated(90.0, 0.0, 0.0, 1.0);
+        myCylinder(0.01/2*bay , 0.01/2*bay, 15);
     glPopMatrix();
 }
 
@@ -208,6 +286,9 @@ void base(int n)
     glRotated(n, 0.0, 1.0, 0.0);
     glTranslated(0.0, crower+body[1]/2 , 0.0);
     myCylinder(body[0]/2 , body[1]/2 , 16);
+    char str[256];
+    char name_str1[]={"base1"};
+   
 }
 
 /*
@@ -218,27 +299,48 @@ static void display(void)
 
     /* シーンの描画 */
     glPushMatrix();
-    myGround(-0.2); /* 地面　　　 */
+        myGround(-0.02); /* 地面　　　 */
     glPopMatrix();
 
     glPushMatrix();
-    base(base1);
-    joint1_display(jo1);
-    upper_display();
-    joint2_display(jo2);
-    forearm_display();
-    joint3_display(jo3);
-    hand_display();
-
+        base(base1);
+        joint1_display(jo1);
+        upper_display();
+        joint2_display(jo2);
+        forearm_display();
+        joint3_display(jo3);
+        hand_display();
     glPopMatrix();
 
     glPushMatrix();
-    glTranslated((sin(radee(base1)) * sin(radee(jo1)) * boom[1] / 2 + sin(radee(base1)) * cos(radee(jo1)) * siten),(crower + body[1] + cos(radee(jo1)) * boom[1] /2- sin(radee(jo1)) * siten) ,(cos(radee(base1)) * sin(radee(jo1)) * boom[1] / 2 + cos(radee(base1)) * cos(radee(jo1)) * siten));
-    glutSolidCube(1);
-   
+        //glTranslated((sin(radee(base1)) * sin(radee(jo1)) * boom[1] / 2 + sin(radee(base1)) * cos(radee(jo1)) * siten),(crower + body[1] + cos(radee(jo1)) * boom[1] /2- sin(radee(jo1)) * siten) ,(cos(radee(base1)) * sin(radee(jo1)) * boom[1] / 2 + cos(radee(base1)) * cos(radee(jo1)) * siten));
+        float x = sin(radee(base1))*(sin(radee(jo1))* boom[1]  + sin(radee(jo2+jo1)) *arm[1]/2+ cos(radee(jo1+jo2)) * siten);
+        float y = (crower + body[1] + cos(radee(jo1)) * boom[1]+cos(radee(jo1+jo2))*arm[1]/2- sin(radee(jo1+jo2)) * siten);
+        float z = cos(radee(base1))*(sin(radee(jo1)) * boom[1] + sin(radee(jo1+jo2)) *arm[1]/2+cos(radee(jo1+jo2)) * siten);
+        
+        float point_x = sin(radee(base1))*(sin(radee(jo1))* boom[1]  + sin(radee(jo2+jo1)) *arm[1]/2+ cos(radee(jo1+jo2)) * (siten + point_che));
+        float point_y =(crower + body[1] + cos(radee(jo1)) * boom[1]+cos(radee(jo1+jo2))*arm[1]/2- sin(radee(jo1+jo2)) * (siten + point_che));
+        float point_z =cos(radee(base1))*(sin(radee(jo1)) * boom[1] + sin(radee(jo1+jo2)) *arm[1]/2+cos(radee(jo1+jo2)) * (siten + point_che));
+        glPushMatrix();
+           // glTranslated(x,y,z);
+           // glutSolidCube(0.5);
+        glPopMatrix();
+           // glTranslated(point_x,point_y,point_z);
+           // glutSolidCube(0.1);
+        glPushMatrix();
 
+        glPopMatrix();
     glPopMatrix();
+    track();
 
+    char str[256];
+
+    sprintf(str, "\n\nb1:%d\nj1:%d\nj2:%d", base1,jo1,jo2); /* 文字(char)配列strにaを数字(%d)に変換した文字列を格納 */
+    glPushMatrix();
+        glRasterPos2f(x, y); 
+        for (int i = 0; i < strlen(str); i++) /* 文字列の長さ繰り返す */
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]); /* 1文字ずつ */
+    glPopMatrix();
    /* std::stringstream ss;
     ss << base1;
     std::string str = ss.str(); // "3.14"
@@ -250,15 +352,16 @@ static void display(void)
 }
 
 
+
 static void DrawString(std::string str, int w, int h, int x0, int y0)
 {
     glDisable(GL_LIGHTING);
     // 平行投影にする
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(0, w, h, 0);
-    glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        gluOrtho2D(0, w, h, 0);
+        glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
 
@@ -325,6 +428,37 @@ static void since1(void)
     display();
 }
 
+static void since3(void)
+{
+    const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
+    float x = sin(radee(base1))*(sin(radee(jo1))* boom[1]  + sin(radee(jo2+jo1)) *arm[1]/2+ cos(radee(jo1+jo2)) * siten);
+    float y = (crower + body[1] + cos(radee(jo1)) * boom[1]+cos(radee(jo1+jo2))*arm[1]/2- sin(radee(jo1+jo2)) * siten);
+    float z = cos(radee(base1))*(sin(radee(jo1)) * boom[1] + sin(radee(jo1+jo2)) *arm[1]/2+cos(radee(jo1+jo2)) * siten);
+
+    float xx1 = sin(radee(base1)) * sin(radee(jo1+jo2)) * 1;
+    float xy1 = cos(radee(jo1+jo2)) * 1;
+    float xz1 = cos(radee(base1)) * sin(radee(jo1+jo2)) * 1;
+
+
+    float point_x = sin(radee(base1))*(sin(radee(jo1))* boom[1]  + sin(radee(jo2+jo1)) *arm[1]/2+ cos(radee(jo1+jo2)) * (siten + point_che));
+    float point_y =(crower + body[1] + cos(radee(jo1)) * boom[1]+cos(radee(jo1+jo2))*arm[1]/2- sin(radee(jo1+jo2)) * (siten + point_che));
+    float point_z =cos(radee(base1))*(sin(radee(jo1)) * boom[1] + sin(radee(jo1+jo2)) *arm[1]/2+cos(radee(jo1+jo2)) * (siten + point_che));
+    /* 画面クリア */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    /* モデルビュー変換行列の初期化 */
+    glLoadIdentity();
+
+    gluLookAt(x, y, z, point_x, point_y, point_z, xx1, xy1, xz1);
+    /* 光源の位置を設定 */
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+
+    /* 視点の移動（シーンの方を奥に移す）*/
+    // glTranslated(0.0, 0.0, -70.0);
+    
+    display();
+}
+
 static void since2(void) //手計算
 {
     const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
@@ -341,7 +475,7 @@ static void since2(void) //手計算
     /* 視点の移動（シーンの方を奥に移す）*/
 
 
-    glTranslated(0, 0.0, -80);
+    glTranslated(0, 0.0, -50);
     display();
 }
 
@@ -363,7 +497,23 @@ static void resize(int w, int h)
 
     /* 透視変換行列の初期化 */
     glLoadIdentity();
-    gluPerspective(30.0, (double)w / (double)h, 1.0, 100.0);
+    gluPerspective(30.0, (double)w / (double)h, 1.0, 1000000.0);
+
+    /* モデルビュー変換行列の指定 */
+    glMatrixMode(GL_MODELVIEW);
+}
+
+static void resize1(int w, int h)
+{
+    /* ウィンドウ全体をビューポートにする */
+    glViewport(0, 0, w, h);
+
+    /* 透視変換行列の指定 */
+    glMatrixMode(GL_PROJECTION);
+
+    /* 透視変換行列の初期化 */
+    glLoadIdentity();
+    gluPerspective(42.5, 1.63, 1, 1000);
 
     /* モデルビュー変換行列の指定 */
     glMatrixMode(GL_MODELVIEW);
@@ -373,13 +523,13 @@ static void swjug(unsigned char key, unsigned char down_char, unsigned char up_c
 {
     if (key == up_char)
     {
-        if (a > anglemax)
+        if (a >=anglemax)
             a = anglemax;
         a += 1;
     }
     if (key == down_char)
     {
-        if (a < anglemin)
+        if (a <=anglemin)
             a = anglemin;
         a -= 1;
     }
@@ -387,7 +537,7 @@ static void swjug(unsigned char key, unsigned char down_char, unsigned char up_c
 
 static void keyboard(unsigned char key, int x, int y)
 {
-    swjug(key, 'w', 's', base1, 0, 360); //旋回
+    swjug(key, 'w', 's', base1, -180, 180); //旋回
     swjug(key, 'e', 'd', jo1, 0, 90);    //第一関節
     swjug(key, 'r', 'f', jo2, 0, 90);    //第一関節
     swjug(key, 't', 'g', jo3, 0, 90);    //第一関節
@@ -397,6 +547,10 @@ static void keyboard(unsigned char key, int x, int y)
     {
         exit(0);
     }
+    if(key=='u')
+        flag_num=1;
+    if(key='j')
+        flag_num=0;
 }
 
 static void init(void)
@@ -414,10 +568,11 @@ int main(int argc, char *argv[])
     //バラバラで動くのはスレッドの導入が必要そうwindow1とwindow2
     int window1, window2, window3;
     glutInit(&argc, argv);
+
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
     window1 = glutCreateWindow(argv[0]);
-    glutDisplayFunc(since1);
-    glutReshapeFunc(resize);
+    glutDisplayFunc(since3);
+    glutReshapeFunc(resize1);
     glutInitWindowSize(1280, 1024);
     glutKeyboardFunc(keyboard);
     init();
@@ -431,12 +586,12 @@ int main(int argc, char *argv[])
     init();
 
     /*glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
-    window3 = glutCreateWindow("Window3");
+    window3 = glutCreateWindow(argv[2]);
     glutInitWindowSize(1080, 1024);
-    glutDisplayFunc(since);
-    glutReshapeFunc(resize);
-    init();
-    */
+    glutDisplayFunc(since3);
+    glutReshapeFunc(resize1);
+    init();*/
+
     // printf("%d", nice);
     glutMainLoop();
     return 0;
