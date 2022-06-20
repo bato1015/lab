@@ -322,11 +322,11 @@ static void display(void)
         float point_y =(crower + body[1] + cos(radee(jo1)) * boom[1]+cos(radee(jo1+jo2))*arm[1]/2- sin(radee(jo1+jo2)) * (siten + point_che));
         float point_z =cos(radee(base1))*(sin(radee(jo1)) * boom[1] + sin(radee(jo1+jo2)) *arm[1]/2+cos(radee(jo1+jo2)) * (siten + point_che));
         glPushMatrix();
-           // glTranslated(x,y,z);
-           // glutSolidCube(0.5);
+            //glTranslated(x,y,z);
+           //glutSolidCube(0.5);
         glPopMatrix();
-           // glTranslated(point_x,point_y,point_z);
-           // glutSolidCube(0.1);
+           //glTranslated(point_x,point_y,point_z);
+           glutSolidCube(3);
         glPushMatrix();
 
         glPopMatrix();
@@ -353,50 +353,6 @@ static void display(void)
 
 
 
-static void DrawString(std::string str, int w, int h, int x0, int y0)
-{
-    glDisable(GL_LIGHTING);
-    // 平行投影にする
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-        glLoadIdentity();
-        gluOrtho2D(0, w, h, 0);
-        glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    // 画面上にテキスト描画
-    glRasterPos2f(x0, y0);
-    int size = (int)str.size();
-    for(int i = 0; i < size; ++i){
-        char ic = str[i];
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, ic);
-    }
-
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-}
-
-/*視点をもらう*/
-static void since(void)
-{
-    const static GLfloat lightpos[] = {3.0, 4.0, 5.0, 1.0}; /* 光源の位置 */
-    /* 画面クリア */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    /* モデルビュー変換行列の初期化 */
-    glLoadIdentity();
-
-    // gluLookAt(x, y, z, 5 + x, -5, 20 + z, xx, xy, xz);
-    /* 光源の位置を設定 */
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-
-    /* 視点の移動（シーンの方を奥に移す）*/
-    glTranslated(-150, 0, 0);
-    display();
-}
 
 static void since1(void)
 {
@@ -468,7 +424,7 @@ static void since2(void) //手計算
 
     /* モデルビュー変換行列の初期化 */
     glLoadIdentity();
-    // gluLookAt(x, y, z, 5, -10, -10, 0, 1.0, 0);
+    //gluLookAt(0, 0, 50, 0, 0, -50, 0, 1, 0);
     /* 光源の位置を設定 */
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
