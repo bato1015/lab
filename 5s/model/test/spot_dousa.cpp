@@ -15,11 +15,12 @@
 
 double radee(int n);
 const static GLfloat blue[] = {0.2, 0.2, 0.8, 1.0}; /* 球の色 */
-const static GLfloat yellow[] = {0.8, 0.8, 0.2, 1.0};
+const static GLfloat yellow[] = {1, 0, 0, 1.0};
 const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
 const static GLfloat black[] = {0, 0, 0, 0};
 
-int base1 =0, jo1 = 60, jo2 = 30, jo3 = 0;
+int base1 =0, jo1 = 60, jo2 = 140-jo1+40-90, jo3 = -90;
+double sennsad=7;
 int bay = 50;        //等倍
 int rubberband = 0; /* ラバーバンドの消去 */
 
@@ -29,7 +30,7 @@ double boom[] = {0.01*bay, 0.115*bay, 0.01*bay}; //縦,高さ,横
 double arm[] = {0.01*bay, 0.06*bay, 0.01*bay};   //縦、高さ、横
 //double siten = 0.015*bay;               //視点の位置を取り付け
 double siten = 0.012*bay;  
-double point_che = 0.25+0.05;            //注釈点
+double point_che = 0.25+0.1;            //注釈点
 bool flag_num=0;
 
 double tatetate[1000];
@@ -142,7 +143,7 @@ double radee(int n){
 /*ハンド*/
 void hand_display()
 {
-    glTranslated(0, 0.15 , 0.0);
+    glTranslated(0, 0.03/4 *bay , 0.03/4 *bay);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
     glutSolidCube(0.03/2 *bay);
 }
@@ -350,26 +351,31 @@ void track(){
      glPopMatrix();
 }
 static void display(){
-    double senssa=arm[1];
+    //double senssa=arm[1];
 
-    glm::vec3 xx1 =y_kaitenn(base1)*x_kaitenn(jo1)*x_kaitenn(jo2)*glm::vec3(0,1,0);
+    double lijyou=siten/tan(radee(siten/(0.03*bay)*57));//バケットが見える最大長
+    double kakudo=57/2-siten/(0.03*bay)*57;//バケッと角度
+
+    double senssa=arm[1]-lijyou-0.2*sennsad;//センサ長
 
     glm::vec3 point_l1 = y_kaitenn(base1)*x_kaitenn(jo1)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
     glm::vec3 point_l2 =y_kaitenn(base1)*x_kaitenn(jo1)*glm::vec3(0,boom[1],0);
     glm::vec3 point_l3 =y_kaitenn(base1)*glm::vec3(0,crower+body[1]/2,0);
-    glm::vec3 point_chu=point_l1+point_l2+point_l3;
-    
+    glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
+
+
      /* シーンの描画 */
     glPushMatrix();
-       // myGround(-0.02); /* 地面　　　 */
+        //myGround(-0.02); /* 地面　　　 */
         glTranslated(point_chu.x, point_chu.y, point_chu.z);//底面
         glRotated(base1,0,1,0);  
-        glutSolidCube(0.5);
+        //glutSolidCube(0.5);
     glPopMatrix();
     char str[256];
     //track();
     //台車
-    glPushMatrix();
+    base(base1);
+    /*glPushMatrix();
         base(base1);
         joint1_display(jo1);
         upper_display();
@@ -377,15 +383,14 @@ static void display(){
         forearm_display();
         joint3_display(jo3);
         hand_display();
-    glPopMatrix();
+    glPopMatrix();*/
     double qw=0;
-    double w1=tan(radee(34))*(point_chu.y)*2;
-    double h1=tan(radee(28.5))*(point_chu.y)*2;
-    double se1=tan(radee(68+10))*(point_chu.y)-tan(radee(10))*(point_chu.y);
-     /*double w1=tan(34)*(g_arm.y)*2;
-    double h1=tan(28.5)*(g_arm.y)*2;
-    double se1=tan(68+40)*(g_arm.y)-tan(40)*(g_arm.y);
-    */
+    double w1=tan(radee(86/2))*(point_chu.y)*2;
+    double h1=tan(radee(57/2))*(point_chu.y)*2;
+    //double se1=tan(radee(68+10))*(point_chu.y)-tan(radee(10))*(point_chu.y);
+
+    //backetの影
+    
     glPushMatrix();
         
     glPopMatrix();
@@ -414,16 +419,16 @@ static void display(){
             glPopMatrix();
         }
         //90度のときの画面
-        for(int i=0;i<count;i++){
+        /*for(int i=0;i<count;i++){
             glPushMatrix();
                 glTranslated(pppoint_x[i],0,pppoint_y[i]);//底面
                 glRotated(ppkaitenn[i],0,1,0);
                 kage(tatetate[i],yokoyoko[i],0,0,0);
             glPopMatrix();
-        }
+        }*/
     glPopMatrix();
     glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
-    sprintf(str, "w1:%lf\n\nb1:%d\nj1:%d\nj2:%d",point_chu.y, base1,jo1,jo2); /* 文字(char)配列strにaを数字(%d)に変換した文字列を格納 */
+    sprintf(str, "kakudo:%lf\nl_i:%lf\nw1:%lf\n\nb1:%d\nj1:%d\nj2:%d",kakudo,lijyou,point_chu.y, base1,jo1,jo2); /* 文字(char)配列strにaを数字(%d)に変換した文字列を格納 */
     glPushMatrix();
         glRasterPos2f(-5, 10); 
         for (int i = 0; i < strlen(str); i++) /* 文字列の長さ繰り返す */
@@ -493,10 +498,10 @@ static void swjug(unsigned char key, unsigned char down_char, unsigned char up_c
 
 static void keyboard(unsigned char key, int x, int y)
 {
-    swjug(key, 'w', 's', base1, 0, 89); //旋回
+    swjug(key, 'w', 's', base1, 1, 89); //旋回
     swjug(key, 'e', 'd', jo1, 0, 90);    //第一関節
     swjug(key, 'r', 'f', jo2, 0, 150);    //第一関節
-    swjug(key, 't', 'g', jo3, 0, 90);    //第一関節
+    swjug(key, 't', 'g', jo3, -90, 0);    //第一関節
     glutPostRedisplay();
 
     if (key == '\033' || key == 'q')
@@ -523,9 +528,10 @@ static void init(void)
 int main(int argc, char *argv[])
 {
     //バラバラで動くのはスレッドの導入が必要そうwindow1とwindow2
-    int window1, window2, window3;
+    int window1;
     glutInit(&argc, argv);
-
+    if(base1<90)
+    base1++;
     glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
     window1 = glutCreateWindow(argv[0]);
     glutDisplayFunc(since2);
@@ -533,15 +539,6 @@ int main(int argc, char *argv[])
     glutInitWindowSize(1280, 1024);
     glutKeyboardFunc(keyboard);
     init();
-
-    /*glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH);
-    window2 = glutCreateWindow(argv[1]);
-    glutDisplayFunc(since2);
-    glutReshapeFunc(resize1);
-    glutInitWindowSize(1080, 1024);
-    glutKeyboardFunc(keyboard);
-    init();*/
-
     glutMainLoop();
     return 0;
 }
