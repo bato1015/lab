@@ -2,6 +2,8 @@ const static GLfloat blue[] = {0.2, 0.2, 0.8, 1.0}; /* 球の色 */
 const static GLfloat yellow[] = {0.8, 0.8, 0.2, 1.0};
 const static GLfloat red[] = {0.8, 0.2, 0.2, 1.0};
 const static GLfloat black[] = {0, 0, 0, 0};
+const static GLfloat white[] = {1, 1, 1, 1};
+
 /*
  * 円柱を描く
  */
@@ -12,7 +14,7 @@ static void myCylinder(double radius, double height, int sides)
     int i = 0;
 
     /* 材質を設定する */
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
 
     /* 上面 */
     glNormal3d(0.0, 1.0, 0.0);

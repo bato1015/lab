@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 project(testas)
-add_executable(testas anime.cpp)
+add_executable(testas anime2.cpp)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 

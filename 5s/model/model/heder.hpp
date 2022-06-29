@@ -1,6 +1,3 @@
-
-
-
 //oprnGL
 #include <stdlib.h>
 #include <math.h>
@@ -246,7 +243,10 @@ void kage(double tate,double yoko,double takasa,double x,double z){
 }
 
 
-void saveImage( const unsigned int imageWidth, const unsigned int imageHeight )
+std::string str="123456789abcdefghijklmn";
+std::string strr="0123456";
+
+void saveImage( const unsigned int imageWidth, const unsigned int imageHeight ,int j,int r)
 {
   const unsigned int channelNum = 3; // RGBなら3, RGBAなら4
   void* dataBuffer = NULL;
@@ -267,7 +267,11 @@ void saveImage( const unsigned int imageWidth, const unsigned int imageHeight )
 	);
 
   GLubyte* p = static_cast<GLubyte*>( dataBuffer );
-  std::string fname = "outputImage.jpg";
+ 
+  std::string fname=" ./image/outputImage";
+  std::string choushi=".jpg";
+  fname = fname+strr[r]+str[j]+choushi;
+
   IplImage* outImage = cvCreateImage( cvSize( imageWidth, imageHeight ), IPL_DEPTH_8U, 3 );
   
 
@@ -282,10 +286,10 @@ void saveImage( const unsigned int imageWidth, const unsigned int imageHeight )
     }
   }
 
-  cvSaveImage( fname.c_str(), outImage );
+  cvSaveImage(fname.c_str(), outImage );
     cv::Mat img, dst;
 
-  img = cv::imread("outputImage.jpg");
+  img = cv::imread("./image/outputImage.jpg");
    //std::cout << img << std::endl;
 
 }

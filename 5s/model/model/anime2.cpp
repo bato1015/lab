@@ -1,8 +1,8 @@
 #include "heder.hpp"
 
-int base1 =0, jo1 = 90, jo2 = 140-jo1+40-90, jo3 = -90;
-double sennsad=7;
-
+int base1 =0, jo1 = 90, jo2 =0 , jo3 = -90;
+double sennsad=0;
+double num_ber=0;
 
 
 static void display(){
@@ -11,31 +11,33 @@ static void display(){
     double lijyou=siten/tan(radee(siten/(0.03*bay)*57));//バケットが見える最大長
     double kakudo=57/2-siten/(0.03*bay)*57;//バケッと角度
     double senssa=arm[1]-lijyou-0.2*sennsad;//センサ長
-            glm::vec3 point_l1 = y_kaitenn(base1)*x_kaitenn(jo1)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
+            
+        glm::vec3 point_l1 = y_kaitenn(base1)*x_kaitenn(jo1)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
         glm::vec3 point_l2 =y_kaitenn(base1)*x_kaitenn(jo1)*glm::vec3(0,boom[1],0);
         glm::vec3 point_l3 =y_kaitenn(base1)*glm::vec3(0,crower+body[1]/2,0);
         glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
 
     int m=0;
 
-        for(int i=0;i<90;i++){
-        glm::vec3 point_l1 = y_kaitenn(i)*x_kaitenn(jo1)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
-        glm::vec3 point_l2 =y_kaitenn(i)*x_kaitenn(jo1)*glm::vec3(0,boom[1],0);
-        glm::vec3 point_l3 =y_kaitenn(i)*glm::vec3(0,crower+body[1]/2,0);
-        glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
-        double w1=tan(radee(86/2))*(point_chu.y)*2;
-        double h1=tan(radee(57/2))*(point_chu.y)*2;
+            for(int i=1;i<91;i++){
+                glm::vec3 point_l1 = y_kaitenn(i)*x_kaitenn(90-60*i/90)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
+                glm::vec3 point_l2 =y_kaitenn(i)*x_kaitenn(90-60*i/90)*glm::vec3(0,boom[1],0);
+                glm::vec3 point_l3 =y_kaitenn(i)*glm::vec3(0,crower+body[1]/2,0);
+                glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
+                double w1=tan(radee(86/2))*(point_chu.y)*2;
+                double h1=tan(radee(57/2))*(point_chu.y)*2;
                 if(point_chu.y<6||point_chu.y>0.4){  
                 //kage(h1,w1,7,0,0);
-                tatetate[m]=h1;
-                yokoyoko[m]=w1;
-                pppoint_x[m]=point_chu.x;
-                pppoint_y[m]=point_chu.z;
-                ppkaitenn[m]=i;
-                m++;   
+                    tatetate[m]=h1;
+                    yokoyoko[m]=w1;
+                    pppoint_x[m]=point_chu.x;
+                    pppoint_y[m]=point_chu.z;
+                    ppkaitenn[m]=i;
+                    m++;   
                 //count++;
                 }
-        }
+            }
+
 
 
      /* シーンの描画 */
@@ -73,6 +75,8 @@ static void display(){
     //glTranslated(point_chu.x,0,point_chu.z);//底面
     //glRotated(base1,0,1,0);
         //影の描画
+        
+
         for(int i=0;i<m;i++){
             glPushMatrix();
                 glTranslated(pppoint_x[i],0,pppoint_y[i]);//底面
@@ -81,14 +85,7 @@ static void display(){
                 //glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
             glPopMatrix();
         }
-        //90度のときの画面
-        /*for(int i=0;i<count;i++){
-            glPushMatrix();
-                glTranslated(pppoint_x[i],0,pppoint_y[i]);//底面
-                glRotated(ppkaitenn[i],0,1,0);
-                kage(tatetate[i],yokoyoko[i],0,0,0);
-            glPopMatrix();
-        }*/
+
     glPopMatrix();
     //glMaterialfv(GL_FRONT, GL_DIFFUSE, black);
     sprintf(str, "kakudo:%lf\nl_i:%lf\nw1:%lf\n\nb1:%d\nj1:%d\nj2:%d",kakudo,lijyou,point_chu.y, base1,jo1,jo2); /* 文字(char)配列strにaを数字(%d)に変換した文字列を格納 */
@@ -97,6 +94,8 @@ static void display(){
         for (int i = 0; i < strlen(str); i++) /* 文字列の長さ繰り返す */
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]); /* 1文字ずつ */
     glPopMatrix();
+    myCylinder(body[0]/2 , body[1]/2 , 16);
+
     glFlush();
 }
 
@@ -124,7 +123,7 @@ static void since2(void) //手計算
 
 
     //glTranslated(0, 0.0, -50);
-                display();
+    display();
 }
 
 static void resize1(int w, int h)
@@ -149,13 +148,14 @@ static void swjug(unsigned char key, unsigned char down_char, unsigned char up_c
     {
         if (a >=anglemax)
             a = anglemax;
-        a += 1;
+        a +=10;
+        num_ber++;
     }
     if (key == down_char)
     {
         if (a <=anglemin)
             a = anglemin;
-        a -= 1;
+        a -=5;
     }
 }
 
@@ -163,20 +163,22 @@ static void keyboard(unsigned char key, int x, int y)
 {
     swjug(key, 'w', 's', base1, 1, 89); //旋回
     swjug(key, 'e', 'd', jo1, 0, 90);    //第一関節
-    swjug(key, 'r', 'f', jo2, 0, 150);    //第一関節
+    swjug(key, 'r', 'f', jo2, 0, 110);    //第一関節
     swjug(key, 't', 'g', jo3, -90, 0);    //第一関節
     glutPostRedisplay();
 
     if (key == '\033' || key == 'q')
     {
-        saveImage(1280, 720);
-        saveimage1();
+        //saveImage(1280, 720);
+        //saveimage1();
         exit(0);
     }
     if(key=='u')
         flag_num=1;
-    if(key='j')
+    if(key='j'){
         flag_num=0;
+        saveImage(1280, 720,num_ber,sennsad);
+    }
 }
 
 
@@ -191,6 +193,7 @@ static void init(void)
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);      /* 1番目の光源点灯 */
 }
+
 
 int main(int argc, char *argv[])
 {
