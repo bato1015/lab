@@ -48,7 +48,7 @@ auto x_kaitenn(int re);
 auto y_kaitenn(int re);
 auto z_kaitenn(int re);
 
-void kage(double tate,double yoko,double takasa,double x,double z);
+void kage(double tate,double yoko,double takasa,double x);
 static void myBox1(double x, double y, double z);//blue
 static void myGround(double height);
 void track();
@@ -81,6 +81,9 @@ double pppoint_x[1000];
 double pppoint_y[1000];
 double ppkaitenn[1000];
 int count=0;
+
+
+
 
 //deg→rad
 double radee(int n){
@@ -197,7 +200,7 @@ void track(){
     glPushMatrix();
         double danpu[]={5,0.52,2.5};//長さ
         double ita[]={0.2,0.52};//幅
-        glTranslated(-5, 1.125, 0);//基準面
+        glTranslated(5, 1.125, 0);//基準面
 
         glPushMatrix();
             glTranslated(-danpu[0]/2-ita[0]/2, danpu[1]/2, 0);//横1
@@ -229,25 +232,36 @@ void track(){
 
 void kage(double tate,double yoko,double takasa,double x,double z){
 
+//double w_x,double  w_y,double w_z
     //glBegin(GL_LINE_LOOP);
     glBegin(GL_POLYGON);
     glVertex3d(x-yoko/2,takasa,z-tate/2);
     glVertex3d(x-yoko/2,takasa,z+tate/2);
-    //glVertex3d(point_chu.x,point_chu.y,point_chu.z);
+    //glVertex3d(w_x,w_y,w_z);
     glVertex3d(x+yoko/2,takasa,z+tate/2);
     glVertex3d(x+yoko/2,takasa,z-tate/2);
-    //glVertex3d(point_chu.x,point_chu.y,point_chu.z);
+    //glVertex3d(w_x,w_y,w_z);
     glColor3f(1,0,0);
     glEnd();
     
 }
 
 
-std::string str="123456789abcdefghijklmn";
-std::string strr="0123456";
+//std::string str="123456789abcdefghijklmn";
+//std::string strr="0123456";
 
 void saveImage( const unsigned int imageWidth, const unsigned int imageHeight ,int j,int r)
 {
+
+std::ostringstream j_out;
+ j_out << std::setfill('0') << std::setw(2) << j;
+std::string str = j_out.str();
+
+std::ostringstream r_out;
+r_out << std::setfill('0') << std::setw(3) << r;
+std::string strr = r_out.str();
+
+
   const unsigned int channelNum = 3; // RGBなら3, RGBAなら4
   void* dataBuffer = NULL;
   dataBuffer = ( GLubyte* )malloc( imageWidth * imageHeight * channelNum );
@@ -268,9 +282,9 @@ void saveImage( const unsigned int imageWidth, const unsigned int imageHeight ,i
 
   GLubyte* p = static_cast<GLubyte*>( dataBuffer );
  
-  std::string fname=" ./image/outputImage";
+  std::string fname="../image/outputImage";
   std::string choushi=".jpg";
-  fname = fname+strr[r]+str[j]+choushi;
+  fname = fname+strr+str+choushi;
 
   IplImage* outImage = cvCreateImage( cvSize( imageWidth, imageHeight ), IPL_DEPTH_8U, 3 );
   

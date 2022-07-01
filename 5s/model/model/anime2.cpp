@@ -1,7 +1,7 @@
 #include "heder.hpp"
 
-int base1 =0, jo1 = 90, jo2 =0 , jo3 = -90;
-double sennsad=0;
+int base1 =0, jo1 = 53, jo2 = 0, jo3 = -90;
+double sennsad=13;
 double num_ber=0;
 
 
@@ -10,18 +10,18 @@ static void display(){
 
     double lijyou=siten/tan(radee(siten/(0.03*bay)*57));//バケットが見える最大長
     double kakudo=57/2-siten/(0.03*bay)*57;//バケッと角度
-    double senssa=arm[1]-lijyou-0.2*sennsad;//センサ長
-            
-        glm::vec3 point_l1 = y_kaitenn(base1)*x_kaitenn(jo1)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
-        glm::vec3 point_l2 =y_kaitenn(base1)*x_kaitenn(jo1)*glm::vec3(0,boom[1],0);
-        glm::vec3 point_l3 =y_kaitenn(base1)*glm::vec3(0,crower+body[1]/2,0);
-        glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
+    double senssa=arm[1]-lijyou-0.01*sennsad;//センサ長
+    
+    glm::vec3 point_l1 = y_kaitenn(base1)*x_kaitenn(jo1)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
+    glm::vec3 point_l2 =y_kaitenn(base1)*x_kaitenn(jo1)*glm::vec3(0,boom[1],0);
+    glm::vec3 point_l3 =y_kaitenn(base1)*glm::vec3(0,crower+body[1]/2,0);
+    glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
 
     int m=0;
 
             for(int i=1;i<91;i++){
-                glm::vec3 point_l1 = y_kaitenn(i)*x_kaitenn(90-60*i/90)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
-                glm::vec3 point_l2 =y_kaitenn(i)*x_kaitenn(90-60*i/90)*glm::vec3(0,boom[1],0);
+                glm::vec3 point_l1 = y_kaitenn(i)*x_kaitenn(53+12*i/90)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
+                glm::vec3 point_l2 =y_kaitenn(i)*x_kaitenn(53+12*i/90)*glm::vec3(0,boom[1],0);
                 glm::vec3 point_l3 =y_kaitenn(i)*glm::vec3(0,crower+body[1]/2,0);
                 glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
                 double w1=tan(radee(86/2))*(point_chu.y)*2;
@@ -37,7 +37,6 @@ static void display(){
                 //count++;
                 }
             }
-
 
 
      /* シーンの描画 */
@@ -92,7 +91,7 @@ static void display(){
     glPushMatrix();
         glRasterPos2f(-5, 10); 
         for (int i = 0; i < strlen(str); i++) /* 文字列の長さ繰り返す */
-        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]); /* 1文字ずつ */
+        //glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]); /* 1文字ずつ */
     glPopMatrix();
     myCylinder(body[0]/2 , body[1]/2 , 16);
 
@@ -114,9 +113,9 @@ static void since2(void) //手計算
 
     /* モデルビュー変換行列の初期化 */
     glLoadIdentity();
-    gluLookAt(0, 30, 0, 0, -30, 0, 1, 0, 0);//上面
+gluLookAt(0, 30, 0, 0, -30, 0, 1, 0, 0);//上面
 //gluLookAt(30, 0, 0, -30,0, 0, 0, 1, 0);//横面
-    //gluLookAt(0, 0, 30, 0,0, -30, 0, 1, 0);//横面
+//gluLookAt(0, 0, 30, 0,0, -30, 0, 1, 0);//横面
     /* 光源の位置を設定 */
     glLightfv(GL_LIGHT1, GL_POSITION, lightpos1);
     /* 視点の移動（シーンの方を奥に移す）*/
@@ -136,7 +135,7 @@ static void resize1(int w, int h)
 
     /* 透視変換行列の初期化 */
     glLoadIdentity();
-    gluPerspective(42.5, 1.63, 1, 1000);
+    gluPerspective(40.0, (double)w / (double)h, 1.0, 1000000.0);
 
     /* モデルビュー変換行列の指定 */
     glMatrixMode(GL_MODELVIEW);
@@ -201,6 +200,7 @@ int main(int argc, char *argv[])
     //エスケープで保存
     int window1;
     GLint* w;
+    std::cout<<sennsad<<std::endl;
      glGetTexLevelParameteriv(GL_PROXY_TEXTURE_1D,0,GL_TEXTURE_HEIGHT,w);
      std::cout<<w<<std::endl;
     //glutInitWindowPosition(100, 100);

@@ -1,7 +1,7 @@
 #include "heder.hpp"
 
-int base1 =0, jo1 = 60, jo2 = 140-jo1+40-90, jo3 = -90;
-double sennsad=7;
+int base1 =0, jo1 = 53, jo2 = 0, jo3 = -90;
+double sennsad=0;
 
 
 
@@ -24,13 +24,13 @@ static void display(){
         //myGround(-0.02); /* 地面　　　 */
         glTranslated(point_chu.x, point_chu.y, point_chu.z);//底面
         glRotated(base1,0,1,0);  
-        //glutSolidCube(0.5);
+        glutSolidCube(0.5);
     glPopMatrix();
     char str[256];
-    //track();
+    track();
     //台車
     //base(base1);
-    /*glPushMatrix();
+    glPushMatrix();
         base(base1);
         joint1_display(jo1);
         upper_display();
@@ -38,7 +38,7 @@ static void display(){
         forearm_display();
         joint3_display(jo3);
         hand_display();
-    glPopMatrix();*/
+    glPopMatrix();
     double qw=0;
     double w1=tan(radee(86/2))*(point_chu.y)*2;
     double h1=tan(radee(57/2))*(point_chu.y)*2;
@@ -106,9 +106,9 @@ static void since2(void) //手計算
 
     /* モデルビュー変換行列の初期化 */
     glLoadIdentity();
-    gluLookAt(0, 30, 0, 0, -30, 0, 1, 0, 0);//上面
-//gluLookAt(30, 0, 0, -30,0, 0, 0, 1, 0);//横面
-    //gluLookAt(0, 0, 30, 0,0, -30, 0, 1, 0);//横面
+//gluLookAt(0, 30, 0, 0, -30, 0, 1, 0, 0);//上面
+   //gluLookAt(30, 0, 0, -30,0, 0, 0, 1, 0);//横面
+    gluLookAt(0, 0, 30, 0,0, -30, 0, 1, 0);//横面
     /* 光源の位置を設定 */
     glLightfv(GL_LIGHT1, GL_POSITION, lightpos1);
     /* 視点の移動（シーンの方を奥に移す）*/
@@ -141,6 +141,9 @@ static void swjug(unsigned char key, unsigned char down_char, unsigned char up_c
         if (a >=anglemax)
             a = anglemax;
         a += 1;
+
+        jo1=53+12*a/90;
+
     }
     if (key == down_char)
     {
@@ -158,10 +161,10 @@ static void keyboard(unsigned char key, int x, int y)
     swjug(key, 't', 'g', jo3, -90, 0);    //第一関節
     glutPostRedisplay();
 
-    if (key == '\033' || key == 'q')
+    if ( key == 'q')
     {
-        saveImage(1280, 720);
-        saveimage1();
+        //saveImage(1280, 720);
+       // saveimage1();
         exit(0);
     }
     if(key=='u')
