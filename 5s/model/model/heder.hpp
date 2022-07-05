@@ -50,6 +50,7 @@ auto z_kaitenn(int re);
 
 void kage(double tate,double yoko,double takasa,double x);
 static void myBox1(double x, double y, double z);//blue
+static void myBox2(double x, double y, double z);//
 static void myGround(double height);
 void track();
 static void display();
@@ -75,11 +76,11 @@ double siten = 0.012*bay;
 double point_che = 0.25+0.1;            //注釈点
 bool flag_num=0;
 
-double tatetate[1000];
-double yokoyoko[1000];
-double pppoint_x[1000];
-double pppoint_y[1000];
-double ppkaitenn[1000];
+double tatetate[3000];
+double yokoyoko[3000];
+double pppoint_x[3000];
+double pppoint_y[3000];
+double ppkaitenn[3000];
 int count=0;
 
 
@@ -235,11 +236,11 @@ void kage(double tate,double yoko,double takasa,double x,double z){
 //double w_x,double  w_y,double w_z
     //glBegin(GL_LINE_LOOP);
     glBegin(GL_POLYGON);
-    glVertex3d(x-yoko/2,takasa,z-tate/2);
-    glVertex3d(x-yoko/2,takasa,z+tate/2);
+    glVertex3d(x-yoko/2,0,z-tate/2);
+    glVertex3d(x-yoko/2,0,z+tate/2);
     //glVertex3d(w_x,w_y,w_z);
-    glVertex3d(x+yoko/2,takasa,z+tate/2);
-    glVertex3d(x+yoko/2,takasa,z-tate/2);
+    glVertex3d(x+yoko/2,0,z+tate/2);
+    glVertex3d(x+yoko/2,0,z-tate/2);
     //glVertex3d(w_x,w_y,w_z);
     glColor3f(1,0,0);
     glEnd();
@@ -282,7 +283,7 @@ std::string strr = r_out.str();
 
   GLubyte* p = static_cast<GLubyte*>( dataBuffer );
  
-  std::string fname="../image/outputImage";
+  std::string fname="../image2/outputImage";
   std::string choushi=".jpg";
   fname = fname+strr+str+choushi;
 

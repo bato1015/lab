@@ -14,7 +14,7 @@ static void myCylinder(double radius, double height, int sides)
     int i = 0;
 
     /* 材質を設定する */
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, white);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, yellow);
 
     /* 上面 */
     glNormal3d(0.0, 1.0, 0.0);
@@ -51,7 +51,8 @@ static void myCylinder(double radius, double height, int sides)
     glEnd();
 }
 
-static void myBox(double x, double y, double z)
+
+static void myBox1(double x, double y, double z)
 {
     GLdouble vertex[][3] = {
         {-x, -y, -z},
@@ -97,7 +98,7 @@ static void myBox(double x, double y, double z)
 }
 
 
-static void myBox1(double x, double y, double z)
+static void myBox(double x, double y, double z)
 {
     GLdouble vertex[][3] = {
         {-x, -y, -z},
@@ -128,7 +129,7 @@ static void myBox1(double x, double y, double z)
     int i, j;
 
     /* 材質を設定する */
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, blue);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, red);
 
     glBegin(GL_QUADS);
     for (j = 0; j < 6; ++j)

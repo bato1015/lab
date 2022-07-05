@@ -1,9 +1,8 @@
 #include "heder.hpp"
 
 int base1 =0, jo1 = 53, jo2 = 0, jo3 = -90;
-double sennsad=13;
+double sennsad=0;
 double num_ber=0;
-
 
 static void display(){
     //double senssa=arm[1];
@@ -18,9 +17,10 @@ static void display(){
     glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
 
     int m=0;
+    for(int w=0;w<121;w+=10){
 
-            for(int i=1;i<91;i++){
-                glm::vec3 point_l1 = y_kaitenn(i)*x_kaitenn(53+12*i/90)*x_kaitenn(jo2)*glm::vec3(0,senssa,point_che);
+            for(int i=0;i<91;i++){
+                glm::vec3 point_l1 = y_kaitenn(i)*x_kaitenn(53+12*i/90)*x_kaitenn(w)*glm::vec3(0,senssa,point_che);
                 glm::vec3 point_l2 =y_kaitenn(i)*x_kaitenn(53+12*i/90)*glm::vec3(0,boom[1],0);
                 glm::vec3 point_l3 =y_kaitenn(i)*glm::vec3(0,crower+body[1]/2,0);
                 glm::vec3 point_chu=point_l1+point_l2+point_l3;//センサ位置の順運動学
@@ -37,14 +37,14 @@ static void display(){
                 //count++;
                 }
             }
-
+    }
 
      /* シーンの描画 */
     glPushMatrix();
         //myGround(-0.02); /* 地面　　　 */
-        //glTranslated(point_chu.x, point_chu.y, point_chu.z);//底面
-        glRotated(base1,0,1,0);  
-        //glutSolidCube(0.5);
+        glTranslated(point_chu.x, point_chu.y, point_chu.z);//底面
+        //glRotated(base1,0,1,0);  
+        //glutSolidCube(1);
     glPopMatrix();
     char str[256];
     //track();
@@ -93,7 +93,7 @@ static void display(){
         for (int i = 0; i < strlen(str); i++) /* 文字列の長さ繰り返す */
         //glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]); /* 1文字ずつ */
     glPopMatrix();
-    myCylinder(body[0]/2 , body[1]/2 , 16);
+    //myCylinder(body[0]/2 , body[1]/2 , 16);
 
     glFlush();
 }
@@ -171,12 +171,17 @@ static void keyboard(unsigned char key, int x, int y)
         //saveImage(1280, 720);
         //saveimage1();
         exit(0);
+        //glutLeaveMainLoop();
     }
     if(key=='u')
         flag_num=1;
     if(key='j'){
         flag_num=0;
         saveImage(1280, 720,num_ber,sennsad);
+        sennsad++;
+        if(sennsad>160){
+            exit(0);
+        }
     }
 }
 

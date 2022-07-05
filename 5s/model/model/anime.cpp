@@ -1,6 +1,6 @@
 #include "heder.hpp"
 
-int base1 =0, jo1 = 53, jo2 = 0, jo3 = -90;
+int base1 =0, jo1 = 53, jo2 =0, jo3 = -90;
 double sennsad=0;
 
 
@@ -27,7 +27,7 @@ static void display(){
         glutSolidCube(0.5);
     glPopMatrix();
     char str[256];
-    track();
+    //track();
     //台車
     //base(base1);
     glPushMatrix();
@@ -106,7 +106,7 @@ static void since2(void) //手計算
 
     /* モデルビュー変換行列の初期化 */
     glLoadIdentity();
-//gluLookAt(0, 30, 0, 0, -30, 0, 1, 0, 0);//上面
+//gluLookAt(0, 30, 0, 0, -20, 0, 1, 0, 0);//上面
    //gluLookAt(30, 0, 0, -30,0, 0, 0, 1, 0);//横面
     gluLookAt(0, 0, 30, 0,0, -30, 0, 1, 0);//横面
     /* 光源の位置を設定 */
@@ -140,15 +140,15 @@ static void swjug(unsigned char key, unsigned char down_char, unsigned char up_c
     {
         if (a >=anglemax)
             a = anglemax;
+            jo1=53+12*a/90;
         a += 1;
-
-        jo1=53+12*a/90;
 
     }
     if (key == down_char)
     {
         if (a <=anglemin)
             a = anglemin;
+            jo1=jo1-12*a/90;
         a -= 1;
     }
 }
