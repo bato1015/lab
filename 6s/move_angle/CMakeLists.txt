@@ -1,0 +1,5 @@
+cmake_minimum_required( VERSION 3.0 )
+project( proj CXX )
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+add_executable( sample move_angle_test.cpp )
+target_link_libraries( sample Eigen3::Eigen )

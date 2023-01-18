@@ -1,0 +1,3 @@
+/home/bato/cit/lab/6s/light/build/CMakeFiles/rebuild_cache.dir
+/home/bato/cit/lab/6s/light/build/CMakeFiles/edit_cache.dir
+/home/bato/cit/lab/6s/light/build/CMakeFiles/testas.dir

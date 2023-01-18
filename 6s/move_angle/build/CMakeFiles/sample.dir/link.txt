@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/sample.dir/move_angle_test.cpp.o -o sample 
