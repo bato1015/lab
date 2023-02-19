@@ -1,12 +1,6 @@
+import seiretu
 from copy import deepcopy
-import numpy as np
 
-data = np.zeros((257,128,101), dtype=np.uint8)
-for x in range(data.shape[0]):
-    for y in range(data.shape[1]):
-        for z in range(data.shape[2]):
-            if (x-50)**2+(y-50)**2+(z-50)**2 < 50**2 and z < 50.5:
-                data[x,y,z] = 1
 
 def crofton_surface(data):
     padded = np.pad(data, 1, 'constant', constant_values=0)
@@ -48,10 +42,10 @@ def crofton_surface(data):
             rolled[[i], : , :] = np.roll(rolled[[i], : , :], i*sgns[1], axis=2)
 
         diff = np.abs(np.sign(np.diff(rolled, axis=0)))
-        cross_section = np.sum(diff) * (3**-0.5)
+        cross_section = np.sum(diff)* (3**-0.5)
         cross_section_sum += cross_section
 
     crofton_s = cross_section_sum / 13 * 2
     return crofton_s
 
-print(crofton_surface(data))
+print(crofton_surface(data)*se)

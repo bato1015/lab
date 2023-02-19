@@ -5,7 +5,7 @@
 int main(){
     cv::Mat img1 = cv::imread("../0.png");
     cv::Mat img2 = cv::imread("../all20.0.png");
-    cv::Mat img3 = cv::imread("../shindokaku1.png");
+    cv::Mat img3 = cv::imread("../shikaku20.5.png");
     std::ofstream ifs("../output.txt",std::ios_base::out | std::ios_base::binary);
     std::ofstream ifs1("../shindokaku.txt",std::ios_base::out | std::ios_base::binary);
     cv::Mat img_OR;
