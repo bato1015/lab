@@ -381,4 +381,8 @@ CMakeFiles/testas.dir/depth_data.cpp.o
  /usr/local/include/opencv4/opencv2/video.hpp
  /usr/local/include/opencv4/opencv2/video/tracking.hpp
  /usr/local/include/opencv4/opencv2/video/background_segm.hpp
+ /usr/include/c++/7/fstream
+ /usr/include/x86_64-linux-gnu/c++/7/bits/basic_file.h
+ /usr/include/x86_64-linux-gnu/c++/7/bits/c++io.h
+ /usr/include/c++/7/bits/fstream.tcc
 

@@ -379,14 +379,22 @@ CMakeFiles/testas.dir/depth_data.cpp.o: ../depth_data.cpp \
   /usr/local/include/opencv4/opencv2/stitching/detail/camera.hpp \
   /usr/local/include/opencv4/opencv2/video.hpp \
   /usr/local/include/opencv4/opencv2/video/tracking.hpp \
-  /usr/local/include/opencv4/opencv2/video/background_segm.hpp
+  /usr/local/include/opencv4/opencv2/video/background_segm.hpp \
+  /usr/include/c++/7/fstream \
+  /usr/include/x86_64-linux-gnu/c++/7/bits/basic_file.h \
+  /usr/include/x86_64-linux-gnu/c++/7/bits/c++io.h \
+  /usr/include/c++/7/bits/fstream.tcc
 
+
+/usr/include/x86_64-linux-gnu/c++/7/bits/c++io.h:
 
 /usr/local/include/opencv4/opencv2/video/background_segm.hpp:
 
 /usr/local/include/opencv4/opencv2/video.hpp:
 
 /usr/local/include/opencv4/opencv2/stitching/detail/blenders.hpp:
+
+/usr/include/c++/7/fstream:
 
 /usr/local/include/opencv4/opencv2/stitching/detail/seam_finders.hpp:
 
@@ -588,6 +596,8 @@ CMakeFiles/testas.dir/depth_data.cpp.o: ../depth_data.cpp \
 
 /usr/local/include/opencv4/opencv2/core/cvstd.hpp:
 
+/usr/include/x86_64-linux-gnu/c++/7/bits/basic_file.h:
+
 /usr/include/c++/7/bits/uniform_int_dist.h:
 
 /usr/include/c++/7/bits/stl_construct.h:
@@ -657,6 +667,8 @@ CMakeFiles/testas.dir/depth_data.cpp.o: ../depth_data.cpp \
 /usr/include/x86_64-linux-gnu/bits/iscanonical.h:
 
 /usr/include/ctype.h:
+
+/usr/include/c++/7/bits/fstream.tcc:
 
 /usr/include/c++/7/bits/locale_facets_nonio.tcc:
 
